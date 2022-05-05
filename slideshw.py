@@ -23,7 +23,7 @@ def slideShow():
   displayCanvas.config(image=img)
   root.after(10000, slideShow) # xx seconds
   ###print("Sliding!! " + str(n))
-fdfds
+
 #### MAIN
 os.system(cmd_chdir)
 os.system(cmd_actualizar)
@@ -47,5 +47,5 @@ root.geometry('%dx%d' % (width, height))
 displayCanvas = tk.Label(root)
 displayCanvas.pack()
 #stime.sleep(10)
-root.after(10, lambda: slideShow())
+root.after(5, lambda: slideShow())
 root.mainloop()
