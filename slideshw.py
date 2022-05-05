@@ -8,15 +8,14 @@ import glob, os
 cmd_chdir = ("cd " + os.getcwd())
 cmd_actualizar = "git pull https://github.com/wichogg/publi"
 cmd_reiniciar = "python slideshw.py"
-cmd_kill = "pkill slideshw.py"
 
 def verificarHorario():
   now = int(strftime("%H"))
   if now >= 22 and now <= 6:
     apagar = "echo 123 | sudo -S rtcwake -m mem --date " + strftime("%Y%m%d060100")
-    os.system(cmd_kill)
     os.system(apagar)
     os.system(cmd_reiniciar)
+    quit()
 
 def slideShow():
   img = next(photos)
