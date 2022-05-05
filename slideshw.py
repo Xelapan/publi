@@ -22,7 +22,7 @@ def slideShow():
   img = next(photos)
   displayCanvas.config(image=img)
   root.after(10000, slideShow) # xx seconds
-  #print("Sliding!! " + str(n))
+  ###print("Sliding!! " + str(n))
 
 #### MAIN
 os.system(cmd_chdir)
