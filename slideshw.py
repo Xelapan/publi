@@ -11,7 +11,7 @@ cmd_reiniciar = "python slideshw.py"
 
 def verificarHorario():
   now = int(strftime("%H"))
-  if now >= 22 and now <= 6:
+  if now >= 12 and now <= 15:
     apagar = "echo 123 | sudo -S rtcwake -m mem --date " + strftime("%Y%m%d060100")
     os.system(apagar)
     os.system(cmd_reiniciar)
