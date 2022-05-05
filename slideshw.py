@@ -8,12 +8,22 @@ import glob, os
 cmd_chdir = ("cd " + os.getcwd())
 cmd_actualizar = "git pull https://github.com/wichogg/publi"
 cmd_reiniciar = "python slideshw.py"
+apagar_display = "vcgencmd display_power 0"
+encender_display = "vcgencmd display_power 1"
 
 def verificarHorario():
   now = int(strftime("%H"))
-  if now >= 12 and now <= 15:
-    apagar = "echo 123 | sudo -S rtcwake -m mem --date " + strftime("%Y%m%d060100")
-    os.system(apagar)
+  #Verifica apagarse entre 10pm y 5AM
+  if now >= 15 and now <= 16:
+    #apagar display
+    os.system(apagar_display)
+    if now <= 10:
+      tsleep = (23 - now) + 5
+    else: 
+      tsleep = 16 - now
+    #Dormir el programa
+    time.sleep((tsleep * 3600) + 2)
+    os.system(encender_display)
     os.system(cmd_reiniciar)
     quit()
 
@@ -26,13 +36,8 @@ def slideShow():
   root.after(5000, slideShow) # xx seconds
   ###print("Sliding!! " + str(n))
 
-#### MAIN
-print( "arrancando...")
-
-now = int(strftime("%H"))
-print(now)
-if now >= 12 and now <= 15:
-  quit()
+#### MAIN o
+os.system(encender_display)
 os.system(cmd_chdir)
 os.system(cmd_actualizar)
 root = tk.Tk()
