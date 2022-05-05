@@ -27,6 +27,12 @@ def slideShow():
   ###print("Sliding!! " + str(n))
 
 #### MAIN
+print( "arrancando...")
+
+now = int(strftime("%H"))
+print(now)
+if now >= 12 and now <= 15:
+  quit()
 os.system(cmd_chdir)
 os.system(cmd_actualizar)
 root = tk.Tk()
