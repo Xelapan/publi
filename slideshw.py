@@ -34,6 +34,7 @@ def slideShow():
   #### Aqui se actualiza el tiempo
   ####
   root.after(5000, slideShow) # xx seconds
+  verificarHorario()
   ###print("Sliding!! " + str(n))
 
 #### MAIN o
