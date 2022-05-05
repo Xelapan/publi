@@ -21,6 +21,9 @@ def verificarHorario():
 def slideShow():
   img = next(photos)
   displayCanvas.config(image=img)
+  ####
+  #### Aqui se actualiza el tiempo
+  ####
   root.after(5000, slideShow) # xx seconds
   ###print("Sliding!! " + str(n))
 
