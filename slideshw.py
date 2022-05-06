@@ -7,7 +7,7 @@ import glob, os
 
 cmd_chdir = ("cd " + os.getcwd())
 cmd_actualizar = "git pull https://github.com/wichogg/publi"
-cmd_reiniciar = "python slideshw.py"
+cmd_reiniciar = "python3 slideshw.py"
 apagar_display = "vcgencmd display_power 0"
 encender_display = "vcgencmd display_power 1"
 
@@ -16,15 +16,15 @@ def verificarHorario():
   #Verifica apagarse entre 10pm y 5AM
   if now >= 22 and now <= 5:
     #apagar display
-    os.system(apagar_display)
-    if now <= 23:
-      tsleep = (23 - now) + 5
-    else: 
-      tsleep = 5 - now
+   # os.system(apagar_display)
+   # if now <= 23:
+   #   tsleep = (23 - now) + 5
+   # else: 
+   #   tsleep = 5 - now
     #Dormir el programa
-    time.sleep((tsleep * 3600) + 2)
-    os.system(encender_display)
-    os.system(cmd_reiniciar)
+   # time.sleep((tsleep * 3600) + 2)
+   # os.system(encender_display)
+   # os.system(cmd_reiniciar)
     quit()
 
 def slideShow():
