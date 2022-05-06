@@ -14,13 +14,13 @@ encender_display = "vcgencmd display_power 1"
 def verificarHorario():
   now = int(strftime("%H"))
   #Verifica apagarse entre 10pm y 5AM
-  if now >= 15 and now <= 16:
+  if now >= 22 and now <= 5:
     #apagar display
     os.system(apagar_display)
-    if now <= 10:
+    if now <= 23:
       tsleep = (23 - now) + 5
     else: 
-      tsleep = 16 - now
+      tsleep = 5 - now
     #Dormir el programa
     time.sleep((tsleep * 3600) + 2)
     os.system(encender_display)
