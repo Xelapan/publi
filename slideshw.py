@@ -15,17 +15,10 @@ def verificarHorario():
   now = int(strftime("%H"))
   #Verifica apagarse entre 10pm y 5AM
   if now >= 22 and now <= 5:
-    #apagar display
-   # os.system(apagar_display)
-   # if now <= 23:
-   #   tsleep = (23 - now) + 5
-   # else: 
-   #   tsleep = 5 - now
-    #Dormir el programa
-   # time.sleep((tsleep * 3600) + 2)
-   # os.system(encender_display)
-   # os.system(cmd_reiniciar)
-   # quit()
+    os.system(cmd_chdir)
+    os.system(cmd_actualizar)
+    quit()
+
 
 def slideShow():
   img = next(photos)
