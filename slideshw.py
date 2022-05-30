@@ -25,7 +25,7 @@ def verificarHorario():
    # time.sleep((tsleep * 3600) + 2)
    # os.system(encender_display)
    # os.system(cmd_reiniciar)
-    quit()
+   # quit()
 
 def slideShow():
   img = next(photos)
