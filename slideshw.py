@@ -6,7 +6,7 @@ from time import gmtime, strftime
 import glob, os
 
 cmd_chdir = ("cd " + os.getcwd())
-cmd_actualizar = "git pull https://github.com/wichogg/publi"
+cmd_actualizar = "git pull https://github.com/Xelapan/publi"
 cmd_reiniciar = "python3 slideshw.py"
 apagar_display = "vcgencmd display_power 0"
 encender_display = "vcgencmd display_power 1"
