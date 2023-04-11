@@ -1,0 +1,15 @@
+{
+   "GIT": {
+       "URL":"https://github.com/Xelapan/publi.git"
+   },
+   "PHP": {
+       "URL":"https://xelapan.com/carrusel/Publicidad/"
+   },
+   "TIME": {
+       "APAGAR":"22",
+       "ENCENDER":"5"
+   },
+   "CONFIGURATION": {
+       "OPTION":"2"
+   }
+}
