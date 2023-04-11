@@ -54,7 +54,7 @@ def verificarHorario():
             os.system(cmd_chdir)
             if var_config == 0:
                 os.system(cmd_actualizar)
-            if var_config == 1:
+            elif var_config == 1:
                 delete_img()
                 download_img()
             quit()
@@ -82,9 +82,8 @@ try:
     os.system(encender_display)
     os.system(cmd_chdir)
     if var_config == 0:
-        print('dentro de 0')
         os.system(cmd_actualizar)
-    if var_config == 1:
+    elif var_config == 1:
         download_img()
     else:
         print('No esta permitido la configuracion ' + str(var_config))

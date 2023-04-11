@@ -8,3 +8,7 @@ git clone https://github.com/Xelapan/publi.git .
 Python 3.7
 sudo apt-get install python3-tk
 sudo apt-get install python3-pil python3-pil.imagetk
+
+
+// Crear archivo para el log de errores
+touch error.log
