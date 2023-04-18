@@ -10,8 +10,9 @@ with open('config.json','r') as file:
   cmd_actualizar = 'git pull ' + config['GIT']['URL']
   var_apagar = int(config['TIME']['APAGAR'])
   var_encender = int(config['TIME']['ENCENDER'])
-  var_urlphp = config['PHP']['URL']
+  var_urlphp = config['LOCAL']['URL']
   var_config = int(config['CONFIGURATION']['OPTION']) 
+  var_update = int(config['TIME']['UPDATE'])
 
 # Variables globals de configuracion
 cmd_chdir = ("cd " + os.getcwd())
@@ -49,15 +50,18 @@ def download_img():
 def verificarHorario():
     try:
         now = int(strftime("%H"))
-        #Verifica apagarse entre 10pm y 5AM
+        #Verifica actualizar imagenes entre las 22hrs y 5am
         if now >= var_apagar and now <= var_encender:
             os.system(cmd_chdir)
             if var_config == 0:
-                os.system(cmd_actualizar)
+                os.system(cmd_chdir + '/publicidad && ' + cmd_actualizar)
             elif var_config == 1:
                 delete_img()
                 download_img()
             quit()
+        elif now == var_update:
+            os.system(cmd_chdir + '/publicidad && ' + cmd_actualizar)
+            print('Actualizar')
     except Exception as ex:
         logging.exception(str(ex)) 
 
@@ -82,7 +86,7 @@ try:
     os.system(encender_display)
     os.system(cmd_chdir)
     if var_config == 0:
-        os.system(cmd_actualizar)
+        os.system(cmd_chdir + '/publicidad && '+ cmd_actualizar)
     elif var_config == 1:
         download_img()
     else:
@@ -96,10 +100,8 @@ try:
     height = root.winfo_screenwidth()
 
     Album = []
-    for image in glob.glob("*.jpg"):
+    for image in glob.glob("./publicidad/*.jpg"):
         img = Image.open(image)
-        # if img.width > width or img.height > height:
-        # only resize image bigger than the screen
         ratio = min(width/img.width, height/img.height)
         img = img.resize((int(img.width*ratio), int(img.height*ratio)))
         Album.append(ImageTk.PhotoImage(img))
@@ -108,7 +110,6 @@ try:
     root.geometry('%dx%d' % (width, height))
     displayCanvas = tk.Label(root)
     displayCanvas.pack()
-    #stime.sleep(10)
     signal.signal(signal.SIGINT, lambda x, y: root.destroy())
     root.after(1, lambda: slideShow())
     root.bind_all('<Control-c>', lambda e: root.destroy())
