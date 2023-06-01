@@ -25,8 +25,8 @@ mydata = json.loads(var_apiImg.content)
 # Elimina las imagenes de la pantalla de publicidad
 def delete_img():
     try:
-        removing_png = glob.glob(os.getcwd() + '/*.png')
-        removing_jpg = glob.glob(os.getcwd() + '/*.jpg')
+        removing_png = glob.glob(os.getcwd() + '/publicidad/*.png')
+        removing_jpg = glob.glob(os.getcwd() + '/publicidad/*.jpg')
 
         for i in removing_png:
             os.remove(i)
@@ -40,8 +40,10 @@ def delete_img():
 # Descargar imagenes para la pantalla de publicidad
 def download_img():
     try:
+        folder_path = os.getcwd() + '/publicidad'
         for data in mydata['img']:
-            with open(data['name'], 'wb') as img:
+            file_path = os.path.join(folder_path, data['name'])
+            with open(file_path, 'wb') as img:
                 img.write(requests.get(var_urlphp + data['name']).content)
             print('Descargando: ' + data['name'])
     except Exception as ex:
