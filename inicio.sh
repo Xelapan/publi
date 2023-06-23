@@ -1,4 +1,4 @@
 
 #!/bin/bash 
- cd /home/publicidad/Escritorio/publi/
+ cd /home/$USER/Desktop/publi/
  python3 slideshw.py

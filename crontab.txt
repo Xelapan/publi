@@ -1,0 +1,6 @@
+28 21 * * * pkill python3
+30 21 * * * vcgencmd display_power 0
+30 5 * * * vcgencmd display_power 1
+35 6 * * * DISPLAY=:0 sh /home/$USER/Desktop/start.sh
+
+@reboot export DISPLAY=:0 sh /home/$USER/Desktop/start.sh
