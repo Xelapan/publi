@@ -9,7 +9,8 @@ from screeninfo import get_monitors
 
 with open('config.json','r') as file: 
     config = json.load(file)
-    cmd_actualizar = 'git pull ' + config['GIT']['URL']
+    
+    #cmd_actualizar = 'git pull ' + config['GIT']['URL']
     var_apagar = int(config['TIME']['APAGAR'])
     var_encender = int(config['TIME']['ENCENDER'])
     var_urlphp = config.get('LOCAL')
@@ -64,16 +65,13 @@ def verificarHorario():
         now = int(strftime("%H"))
         #Verifica actualizar imagenes entre las 22hrs y 5am
         if now >= var_apagar and now <= var_encender:
-            os.system(cmd_chdir)
-            if var_config == 0:
-                os.system(cmd_chdir + '/publicidad && ' + cmd_actualizar)
-            elif var_config == 1:
+            if var_config == 1:
                 delete_img()
                 download_img()
             quit()
         elif now == var_update:
-            os.system(cmd_chdir + '/publicidad && ' + cmd_actualizar)
-            print('Actualizar')
+            delete_img()
+            download_img()
     except Exception as ex:
         logging.exception(str(ex)) 
 # Función para mostrar medios (imagen o video) en pantalla completa
