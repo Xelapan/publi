@@ -1,16 +1,27 @@
 {
-   "GIT": {
-       "URL":"https://github.com/Xelapan/publicidad.git"
-   },
-   "LOCAL": {
-       "URL":"https://xelapan.com/carrusel/Publicidad/"
-   },
-   "TIME": {
-       "APAGAR":"22",
-       "ENCENDER":"5",
-       "UPDATE":"12"
-   },
-   "CONFIGURATION": {
-       "OPTION":"1"
-   }
-}
+    "GIT": {
+        "URL":"https://github.com/Xelapan/publicidad.git"
+    },
+    "LOCAL": {
+        "GENERAL":"https://xelapan.com/carrusel/Publicidad/",
+        "XELA":"",
+        "MAZATE":"https://xelapan.com/carrusel/mazate/",
+        "VIDEOS":"https://xelapan.com/carrusel/video/",
+        "TOTO":"https://xelapan.com/carrusel/toto/"
+    },
+    "API":{
+         "GENERAL":"https://xelapan.com/carrusel/ws-imagenes.php",
+         "XELA":"",
+         "MAZATE":"https://xelapan.com/carrusel/ws-mazate.php",
+         "VIDEOS":"https://xelapan.com/carrusel/ws-video.php",
+         "TOTO":"https://xelapan.com/carrusel/ws-toto.php"
+    },
+    "TIME": {
+        "APAGAR":"22",
+        "ENCENDER":"5",
+        "UPDATE":"12"
+    },
+    "CONFIGURATION": {
+        "OPTION":"1"
+    }
+ }

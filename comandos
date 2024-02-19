@@ -1,3 +1,57 @@
+nstalación:
+Ubuntu mate
+sudo apt update
+sudo apt upgrade
+
+Verificar la versión de python 
+python3 --version
+Debería ser python 3.10
+
+instalar pip 
+sudo apt install python3.10-distutils
+wget https://bootstrap.pypa.io/get-pip.py
+python3.10 get-pip.py
+
+instalar bibiotecas
+python3.10 -m pip install opencv-python
+python3.10 -m pip install requests
+python3.10 -m pip install screeninfo
+
+Instalar ssh 
+sudo apt install openssh-server
+sudo systemctl enable ssh
+
+Instalar vnc
+instalar: sudo apt-get install x11vnc
+aplicar password: x11vnc -storepasswd
+ejecutar: x11vnc -usepw -forever -display :0
+
+configurar vnc para iniciar cuando inicia el sistema operativo
+primero:
+sudo nano /etc/systemd/system/x11vnc.service
+
+segundo, aqui despues de pegar esto ctr + x lugeo “y” por ultimo enter (copiar todo y pegarlo en la cosola):
+[Unit]
+Description=X11 VNC Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/x11vnc -usepw -forever -display :0
+Restart=always
+RestartSec=5
+User=publicidad
+
+[Install]
+WantedBy=multi-user.target
+
+tercero:
+sudo systemctl enable x11vnc.service
+
+cuarto:
+sudo systemctl start x11vnc.service
+
+para iniciar el sh solo darle los permisos y agregarlo a aplicaciones de arranque
+
 apt get install python-pip
 pip install tk
 python3 slideshw.py

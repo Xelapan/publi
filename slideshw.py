@@ -1,53 +1,63 @@
-import tkinter as tk
-from itertools import cycle
-from PIL import ImageTk, Image
-from time import gmtime, strftime
-import glob, os, json, logging, time, signal, requests
+import glob
+import json
+import logging
+import os
+from time import strftime
+import cv2
+import requests
+from screeninfo import get_monitors
 
-# Configuracion del json
 with open('config.json','r') as file: 
-  config = json.load(file)
-  cmd_actualizar = 'git pull ' + config['GIT']['URL']
-  var_apagar = int(config['TIME']['APAGAR'])
-  var_encender = int(config['TIME']['ENCENDER'])
-  var_urlphp = config['LOCAL']['URL']
-  var_config = int(config['CONFIGURATION']['OPTION']) 
-  var_update = int(config['TIME']['UPDATE'])
+    config = json.load(file)
+    cmd_actualizar = 'git pull ' + config['GIT']['URL']
+    var_apagar = int(config['TIME']['APAGAR'])
+    var_encender = int(config['TIME']['ENCENDER'])
+    var_urlphp = config.get('LOCAL')
+    var_api = config.get('API')
+    var_config = int(config['CONFIGURATION']['OPTION']) 
+    var_update = int(config['TIME']['UPDATE'])
 
 # Variables globals de configuracion
 cmd_chdir = ("cd " + os.getcwd())
 cmd_reiniciar = "python3 slideshw.py"
 apagar_display = "vcgencmd display_power 0"
 encender_display = "vcgencmd display_power 1"
-var_apiImg = requests.get('https://xelapan.com/carrusel/ws-imagenes.php')
-mydata = json.loads(var_apiImg.content)
+#var_apiImg = requests.get('https://xelapan.com/carrusel/ws-imagenes.php')
+#mydata = json.loads(var_apiImg.content)
 
-# Elimina las imagenes de la pantalla de publicidad
+#Eliminar las imagenes de la pantalla de publicidad
 def delete_img():
     try:
-        removing_png = glob.glob(os.getcwd() + '/publicidad/*.png')
-        removing_jpg = glob.glob(os.getcwd() + '/publicidad/*.jpg')
-
-        for i in removing_png:
-            os.remove(i)
-        for i in removing_jpg:
-            os.remove(i)
-        print('Eliminando las imagenes')
+        #time.sleep(10)
+        if requests.get('https://www.google.com', timeout=5).status_code == 200:
+            removing_extensions = ['png', 'jpg', 'mp4', 'gif','jpeg']
+            for ext in removing_extensions:
+                file_list = glob.glob(os.getcwd() + f'/publicidad/*.{ext}')
+                for file in file_list:
+                    os.remove(file)
+            print('Eliminando los archivos')
+        else:
+            print('No se pudo conectar a internet para eliminar los archivos.')
+    except requests.ConnectionError as e:
+        print(f"Error de conexión: {str(e)}")
     except Exception as ex:
-        logging.exception(str(ex)) 
-
+        logging.exception(str(ex))
 
 # Descargar imagenes para la pantalla de publicidad
 def download_img():
     try:
-        folder_path = os.getcwd() + '/publicidad'
-        for data in mydata['img']:
-            file_path = os.path.join(folder_path, data['name'])
-            with open(file_path, 'wb') as img:
-                img.write(requests.get(var_urlphp + data['name']).content)
-            print('Descargando: ' + data['name'])
+        for key, value in var_urlphp.items():
+            folder_path = os.getcwd() + '/publicidad'
+            if var_urlphp.get(key) and var_api.get(key):
+                var_apiImg = requests.get(var_api.get(key))
+                mydata = json.loads(var_apiImg.content)
+                for data in mydata['img']:
+                    file_path = os.path.join(folder_path, data['name'])
+                    with open(file_path, 'wb') as img:
+                        img.write(requests.get(var_urlphp.get(key) + data['name']).content)
+                    print('Descargando: ' + data['name'])
     except Exception as ex:
-        logging.exception(str(ex)) 
+        logging.exception(str(ex))
 
 def verificarHorario():
     try:
@@ -66,23 +76,21 @@ def verificarHorario():
             print('Actualizar')
     except Exception as ex:
         logging.exception(str(ex)) 
-
-def slideShow():
-    try:
-        verificarHorario()
-        img = next(photos)
-        displayCanvas.config(image=img)
-        ####
-        #### Aqui se actualiza el tiempo
-        ####
-        root.after(5000, slideShow) # xx seconds
-        ###print("Sliding!! " + str(n))
-    except Exception as ex:
-        logging.exception(str(ex)) 
-
-try: 
+# Función para mostrar medios (imagen o video) en pantalla completa
+def show_media(file_path):
+    verificarHorario()
+    cap = cv2.VideoCapture(file_path)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame = cv2.resize(frame, (width, height))
+        cv2.imshow("Presentación", frame)
+        if cv2.waitKey(1) & 0xFF == 27:  # Salir con la tecla Esc
+            break
+    cap.release()
+try:
     logging.basicConfig(filename='error.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-
     logging.info('Se inicio el programa')  
     #### MAIN o
     os.system(encender_display)
@@ -90,32 +98,40 @@ try:
     if var_config == 0:
         os.system(cmd_chdir + '/publicidad && '+ cmd_actualizar)
     elif var_config == 1:
+        delete_img()
         download_img()
     else:
         print('No esta permitido la configuracion ' + str(var_config))
         quit()
+
+    # Obtiene el nombre de los archivos multimedia de publicidad  
+    media_folder = "publicidad"
+    media_files = []
+    for filename in os.listdir(media_folder):
+        media_files.append(os.path.join(media_folder, filename))
+
+    # Obtiene el tamaño del monitor principal
+    monitor = get_monitors()[0]
+    width, height = monitor.width, monitor.height
+
     
-    root = tk.Tk()
-    root.overrideredirect(True)
-    root.config(cursor="none")  # hide the mouse cursor
-    width = root.winfo_screenwidth()
-    height = root.winfo_screenwidth()
+    cv2.namedWindow("Presentación", cv2.WND_PROP_FULLSCREEN)
+    cv2.setWindowProperty("Presentación", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-    Album = []
-    for image in glob.glob("./publicidad/*.jpg"):
-        img = Image.open(image)
-        ratio = min(width/img.width, height/img.height)
-        img = img.resize((int(img.width*ratio), int(img.height*ratio)))
-        Album.append(ImageTk.PhotoImage(img))
-    photos = cycle(Album)
+    # Recorre la lista de medios y muéstralos en pantalla completa
+    while True:
+        for media_file in media_files:
+            if media_file.endswith((".jpg", ".png",".jpeg")):
+                image = cv2.imread(media_file)
+                image = cv2.resize(image, (width, height))
+                cv2.imshow("Presentación", image)
+                cv2.waitKey(5000)  # Esperar 5 segundos antes de pasar a la siguiente imagen
+            elif media_file.endswith((".mp4", ".avi", ".gif")):
+                show_media(media_file)
+        if cv2.waitKey(1) & 0xFF == 27:  # Salir con la tecla Esc
+            break
 
-    root.geometry('%dx%d' % (width, height))
-    displayCanvas = tk.Label(root)
-    displayCanvas.pack()
-    signal.signal(signal.SIGINT, lambda x, y: root.destroy())
-    root.after(1, lambda: slideShow())
-    root.bind_all('<Control-c>', lambda e: root.destroy())
-    root.mainloop()
-    logging.info('Se cerro el programa')
+    # Cerrar la ventana al final
+    cv2.destroyAllWindows()
 except Exception as ex:
-    logging.exception(str(ex)) 
+    logging.exception(str(ex))
