@@ -44,21 +44,38 @@ def delete_img():
     except Exception as ex:
         logging.exception(str(ex))
 
-# Descargar imagenes para la pantalla de publicidad
+# Descargar imagenes para la pantalla de publicidad primera versión 
+# def download_img():
+#     try:
+#         for key, value in var_urlphp.items():
+#             folder_path = os.getcwd() + '/publicidad'
+#             if var_urlphp.get(key) and var_api.get(key):
+#                 var_apiImg = requests.get(var_api.get(key))
+#                 mydata = json.loads(var_apiImg.content)
+#                 for data in mydata['img']:
+#                     file_path = os.path.join(folder_path, data['name'])
+#                     with open(file_path, 'wb') as img:
+#                         img.write(requests.get(var_urlphp.get(key) + data['name']).content)
+#                     print('Descargando: ' + data['name']  )
+#     except Exception as ex:
+#         logging.exception(str(ex))
 def download_img():
     try:
-        for key, value in var_urlphp.items():
-            folder_path = os.getcwd() + '/publicidad'
-            if var_urlphp.get(key) and var_api.get(key):
-                var_apiImg = requests.get(var_api.get(key))
-                mydata = json.loads(var_apiImg.content)
-                for data in mydata['img']:
-                    file_path = os.path.join(folder_path, data['name'])
-                    with open(file_path, 'wb') as img:
-                        img.write(requests.get(var_urlphp.get(key) + data['name']).content)
-                    print('Descargando: ' + data['name'])
+        with requests.Session() as s:  # Usar una sesión para reutilizar la conexión TCP
+            for key, value in var_urlphp.items():
+                folder_path = os.getcwd() + '/publicidad'
+                if var_urlphp.get(key) and var_api.get(key):
+                    var_apiImg = s.get(var_api.get(key), timeout=5)  # Añadir un tiempo de espera
+                    mydata = json.loads(var_apiImg.content)
+                    for data in mydata['img']:
+                        file_path = os.path.join(folder_path, data['name'])
+                        image_url = var_urlphp.get(key) + data['name']
+                        response = s.get(image_url, timeout=5)  # Añadir un tiempo de espera
+                        with open(file_path, 'wb') as img:
+                            img.write(response.content)
+                        print('Descargado: ' + data['name'])
     except Exception as ex:
-        logging.exception(str(ex))
+        logging.exception('Error descargando imagen: ' + image_url + '. Error: ' + str(ex))
 
 def verificarHorario():
     try:
@@ -93,15 +110,12 @@ try:
     #### MAIN o
     os.system(encender_display)
     os.system(cmd_chdir)
-    if var_config == 0:
-        os.system(cmd_chdir + '/publicidad && '+ cmd_actualizar)
-    elif var_config == 1:
+    if var_config == 1:
         delete_img()
         download_img()
     else:
         print('No esta permitido la configuracion ' + str(var_config))
         quit()
-
     # Obtiene el nombre de los archivos multimedia de publicidad  
     media_folder = "publicidad"
     media_files = []
@@ -128,7 +142,6 @@ try:
                 show_media(media_file)
         if cv2.waitKey(1) & 0xFF == 27:  # Salir con la tecla Esc
             break
-
     # Cerrar la ventana al final
     cv2.destroyAllWindows()
 except Exception as ex:
