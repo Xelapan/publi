@@ -43,23 +43,7 @@ def delete_img():
         print(f"Error de conexión: {str(e)}")
     except Exception as ex:
         logging.exception(str(ex))
-
-# Descargar imagenes para la pantalla de publicidad primera versión 
-# def download_img():
-#     try:
-#         for key, value in var_urlphp.items():
-#             folder_path = os.getcwd() + '/publicidad'
-#             if var_urlphp.get(key) and var_api.get(key):
-#                 var_apiImg = requests.get(var_api.get(key))
-#                 mydata = json.loads(var_apiImg.content)
-#                 for data in mydata['img']:
-#                     file_path = os.path.join(folder_path, data['name'])
-#                     with open(file_path, 'wb') as img:
-#                         img.write(requests.get(var_urlphp.get(key) + data['name']).content)
-#                     print('Descargando: ' + data['name']  )
-#     except Exception as ex:
-#         logging.exception(str(ex))
-def download_img():
+def descargar():
     try:
         with requests.Session() as s:  # Usar una sesión para reutilizar la conexión TCP
             for key, value in var_urlphp.items():
@@ -70,13 +54,42 @@ def download_img():
                     for data in mydata['img']:
                         file_path = os.path.join(folder_path, data['name'])
                         image_url = var_urlphp.get(key) + data['name']
-                        response = s.get(image_url, timeout=5)  # Añadir un tiempo de espera
-                        with open(file_path, 'wb') as img:
-                            img.write(response.content)
-                        print('Descargado: ' + data['name'])
+                        for i in range(3):  # Intentar descargar la imagen hasta 3 veces
+                            try:
+                                response = s.get(image_url, timeout=2)  # Añadir un tiempo de espera
+                                with open(file_path, 'wb') as img:
+                                    img.write(response.content)
+                                print('Descargado: ' + data['name'])
+                                break  # Si la descarga fue exitosa, salir del bucle
+                            except Exception as ex:
+                                print('Error descargando imagen: ' + image_url + '. Intento: ' + str(i+1))
+                                if i == 2:  # Si este fue el último intento, registrar el error
+                                    logging.exception('Error descargando imagen: ' + image_url + '. Error: ' + str(ex))
     except Exception as ex:
-        logging.exception('Error descargando imagen: ' + image_url + '. Error: ' + str(ex))
-
+        logging.exception('Error general: ' + str(ex))
+def download_img():
+    try:
+        nombres = []  # Lista para guardar los nombres
+        for key, url in var_api.items():
+            if url:  # Verifica que la URL no esté vacía
+                response = requests.get(url)
+                if response.status_code == 200:
+                    data = response.json()  # Suponiendo que las APIs devuelven JSON
+                    for item in data['img']:
+                        nombres.append(item['name'])  # Agrega el nombre a la lista
+                else:
+                    print(f"Error al obtener datos de {key}: {response.status_code}")
+        folder_path = os.getcwd() + '/publicidad'       
+        while True:
+            files = os.listdir(folder_path)
+            if len(files) == len(nombres):
+                print("descarga completa")
+                break
+            else:
+                delete_img()
+                descargar()
+    except Exception as ex:
+        logging.exception('Error descargando imágenes: ' + str(ex))
 def verificarHorario():
     try:
         now = int(strftime("%H"))
