@@ -93,20 +93,20 @@ def download_img():
 def verificarHorario():
     try:
         now = int(strftime("%H"))
+        min = int(strftime("%M"))
         #Verifica actualizar imagenes entre las 22hrs y 5am
         if now >= var_apagar and now <= var_encender:
             if var_config == 1:
                 delete_img()
                 download_img()
             quit()
-        elif now == var_update:
+        elif now == var_update and min == 5:
             delete_img()
             download_img()
     except Exception as ex:
         logging.exception(str(ex)) 
 # Función para mostrar medios (imagen o video) en pantalla completa
 def show_media(file_path):
-    verificarHorario()
     cap = cv2.VideoCapture(file_path)
     while True:
         ret, frame = cap.read()
@@ -146,6 +146,7 @@ try:
     # Recorre la lista de medios y muéstralos en pantalla completa
     while True:
         for media_file in media_files:
+            verificarHorario()
             if media_file.endswith((".jpg", ".png",".jpeg")):
                 image = cv2.imread(media_file)
                 image = cv2.resize(image, (width, height))
