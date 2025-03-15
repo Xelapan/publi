@@ -18,6 +18,14 @@ retry = Retry(
     status_forcelist=[500, 502, 503, 504]  # Códigos de estado que forzarán un reintento
 )
 adapter = HTTPAdapter(max_retries=retry)
+def actualizar_repositorio():
+    try:
+        os.system('git pull origin test')
+        logging.info('Repositorio actualizado correctamente')
+    except Exception as ex:
+        logging.exception('Error al actualizar el repositorio: ' + str(ex))
+
+actualizar_repositorio()
 
 # Montar el adaptador para todas las URLs
 session.mount('http://', adapter)
