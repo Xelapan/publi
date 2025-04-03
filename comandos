@@ -1,3 +1,88 @@
+Repositorio rama Test: https://github.com/Xelapan/publi.git 
+comando: 
+
+cd Desktop
+git clone -b test https://github.com/Xelapan/publi.git 
+
+Raspberry Pi OS
+PROYECTO PYTHON
+Configuración para el proyecto de publi:
+Comandos:
+sudo apt update
+sudo apt install python3-venv
+crear entorno virtual:
+cd publi
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install opencv-python
+pip install requests
+pip install screeninfo
+
+para ejecutarlo:
+	python3 slideshw.py
+CONFIGURAR .SH
+permisos: 
+mover el archivo  inicio.sh al escritorio fuera de la carpeta publi editar el archivo con:
+
+	sudo nano inicio.sh
+Reemplazar el contenido por esto
+#!/bin/bash 
+cd /home/$USER/Desktop/publi/ ||exit
+. venv/bin/activate || exit
+python3 slideshw.py
+y aplicar permisos
+	sudo chmod 777 inicio.sh
+Configurar CRONTAB
+Ejecutar:
+	crontab -e
+	seleccionar la opcion 1
+	pegar el siguiente comando 
+@reboot /bin/bash /home/$USER/Desktop/inicio.sh
+
+Instalar ssh 
+sudo apt install openssh-server
+sudo systemctl enable ssh
+Instalar vnc
+instalar: sudo apt-get install x11vnc
+aplicar password: x11vnc -storepasswd
+En este inciso debe configurarse algunas permisos:
+sudo raspi-config
+Navegar a las opciones avanzadas:
+Selecciona Advanced Options.
+Luego, elige Wayland.
+Seleccionar X11:
+Se te presentarán opciones para seleccionar el servidor de pantalla.
+Elige la opción que corresponda a X11.
+ejecutar: x11vnc -usepw -forever -display :0
+
+configurar vnc para iniciar cuando inicia el sistema operativo
+primero:
+sudo nano /etc/systemd/system/x11vnc.service
+
+segundo, aqui despues de pegar esto ctr + x lugeo “y” por ultimo enter (copiar todo y pegarlo en la cosola):
+[Unit]
+Description=X11 VNC Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/x11vnc -usepw -forever -display :0
+Restart=always
+RestartSec=5
+User=publicidad
+
+[Install]
+WantedBy=multi-user.target
+
+tercero:
+sudo systemctl enable x11vnc.service
+
+cuarto:
+sudo systemctl start x11vnc.service
+
+
+
+
 nstalación:
 Ubuntu mate
 sudo apt update
