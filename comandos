@@ -1,10 +1,16 @@
 Repositorio rama Test: https://github.com/Xelapan/publi.git 
 comando: 
+Manual Técnico Publicidad						24/10/2023
+Repositorio rama Test: https://github.com/Xelapan/publi.git 
+comando: 
+Utilizar sistema operativo “Raspberry Pi OS”
+usuario: publicidad
+Password: 123456
 
+Abrir una terminal y ejecutar lo siguiente
 cd Desktop
 git clone -b test https://github.com/Xelapan/publi.git 
 
-Raspberry Pi OS
 PROYECTO PYTHON
 Configuración para el proyecto de publi:
 Comandos:
@@ -19,15 +25,16 @@ pip install opencv-python
 pip install requests
 pip install screeninfo
 
-para ejecutarlo:
+para probar ejecutar:
 	python3 slideshw.py
-CONFIGURAR .SH
-permisos: 
-mover el archivo  inicio.sh al escritorio fuera de la carpeta publi editar el archivo con:
 
+CONFIGURAR .SH
+Abrir una terminal
+	cd Desktop
 	sudo nano inicio.sh
 
-Reemplazar el contenido por esto
+copiar esto y pegarlo en la terminal
+
 #!/bin/bash
 
 # Esperar a que haya conexión a internet
@@ -49,11 +56,14 @@ echo "Iniciando presentación..."
 python3 slideshw.py
 
 
-y aplicar permisos
+Para terminar de configurar esto aplicar permisos
 	sudo chmod 777 inicio.sh
+
 Configurar servicio publicidad
-Ejecutar:
-sudo nano /etc/systemd/system/inicio-publicidad.service
+
+Con la terminal abierta Ejecutar:
+
+sudo nano /etc/systemd/system/publicidad.service
 
 Copiar y pegar 
 		[Unit]
@@ -88,9 +98,13 @@ sudo systemctl restart publicidad.service
 Instalar ssh 
 sudo apt install openssh-server
 sudo systemctl enable ssh
+sudo systemctl restart ssh
 Instalar vnc
-instalar: sudo apt-get install x11vnc
-aplicar password: x11vnc -storepasswd
+instalar: 
+sudo apt-get install x11vnc
+aplicar password: 
+x11vnc -storepasswd
+(cuando se ejecuta este comando simplemente digitar la contraseña del 1 al 6)
 En este inciso debe configurarse algunas permisos:
 sudo raspi-config
 Navegar a las opciones avanzadas:
@@ -99,7 +113,80 @@ Luego, elige Wayland.
 Seleccionar X11:
 Se te presentarán opciones para seleccionar el servidor de pantalla.
 Elige la opción que corresponda a X11.
+ejecutar:
+ x11vnc -usepw -forever -display :0
+
+configurar vnc para iniciar cuando inicia el sistema operativo
+primero:
+sudo nano /etc/systemd/system/x11vnc.service
+
+segundo, copiar y pegar esto, cuando termina de pegar entonces presionar ctrl + x presiona “y” por último Enter.
+
+[Unit]
+Description=X11 VNC Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/x11vnc -usepw -forever -display :0
+Restart=always
+RestartSec=5
+User=publicidad
+
+[Install]
+WantedBy=multi-user.target
+
+tercero:
+sudo systemctl enable x11vnc.service
+
+cuarto:
+sudo systemctl start x11vnc.service
+
+
+
+
+
+
+
+Raspberry pi 4 
+Configuraciones para sistema operativo Ubuntu Mate
+Requisitos de Entorno:
+Sistema Operativo: ubuntu-mate-22.04-desktop-arm64+raspi
+usuario: publicidad
+Password: 123456
+Versión de Python: Python 3.10 o superior.
+https://drive.google.com/file/d/1mjAhOVmb_NzigzNu7sOcd1JlVpaSANNI/view?usp=drive_link 
+
+Instalación:
+Ubuntu mate
+sudo apt update
+sudo apt upgrade
+
+Verificar la versión de python 
+python3 --version
+Debería ser python 3.10
+
+instalar pip 
+sudo apt install python3.10-distutils
+wget https://bootstrap.pypa.io/get-pip.py
+python3.10 get-pip.py
+
+instalar bibiotecas
+python3.10 -m pip install opencv-python
+python3.10 -m pip install requests
+python3.10 -m pip install screeninfo
+
+Instalar ssh 
+sudo apt install openssh-server
+sudo systemctl enable ssh
+
+Instalar vnc
+instalar: sudo apt-get install x11vnc
+aplicar password: x11vnc -storepasswd
 ejecutar: x11vnc -usepw -forever -display :0
+
+
+
+
 
 configurar vnc para iniciar cuando inicia el sistema operativo
 primero:
@@ -125,29 +212,65 @@ sudo systemctl enable x11vnc.service
 cuarto:
 sudo systemctl start x11vnc.service
 
+para iniciar el sh solo darle los permisos y agregarlo a aplicaciones de arranque
+cd Escritorio
+sudo chmod 777 inicio.sh
+buscar aplicaciones de inicio y añadir inicio.sh
 
-nstalación:
+Desactivar la suspensión automática de la pantalla y también el gestor de energía que nunca se suspenda el dispositivo 
+
+comandos 
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+  
+GNU nano 7.2          /etc/xdg/lxsession/LXDE-pi/autostart *                  
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+#@xscreensaver -no-splash
+@xset s off                                                
+@xset -dpms 
+
+Raspberry pi 3
+Requisitos de Entorno:
+Sistema Operativo: ubuntu-mate-18.04.2-beta1-desktop-arm64+raspi3-ext4.img
+usuario: publicidad
+Password: 123456
+Versión de Python: Python 3.8.
+
+Instalación:
 Ubuntu mate
 sudo apt update
 sudo apt upgrade
 
-Verificar la versión de python 
+Instalar python:
+// verificar si el sistema está actualizado
+sudo apt update
+// instalar python
+sudo apt install python3
+// verificar si la versión de python es la correcta (Python 3.8.10 o 
+)
 python3 --version
-Debería ser python 3.10
-
-instalar pip 
-sudo apt install python3.10-distutils
-wget https://bootstrap.pypa.io/get-pip.py
-python3.10 get-pip.py
-
-instalar bibiotecas
-python3.10 -m pip install opencv-python
-python3.10 -m pip install requests
-python3.10 -m pip install screeninfo
-
-Instalar ssh 
-sudo apt install openssh-server
-sudo systemctl enable ssh
+// instalar pip 
+sudo apt install python3-pip
+// si la versión de python no es la correcta entonces ejecutar lo siguiente
+sudo apt install python3.8
+// para utilizar python3.8 como predeterminado ejecutar lo siguiente
+//agregar la versión que estaba instalado por defecto en el sistema en la parte subrayado
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+//elegir la opción de python3.8.2 
+sudo update-alternatives --config python3
+// por último actualizar el pip3
+pip3 install --upgrade pip
+// moverse a la carpeta publi debería estar en escritorio
+// instalar las bibliotecas
+pip3 install requirements
+// Verificar si las bibliotecas existen
+	pip3 list
+// si el archivo request no se ejecuta correctamente instalar las librerías uno por uno
+pip3 install glob2
+pip3 install opencv-python
+pip3 install requests
+pip3 install screeninfo
 
 Instalar vnc
 instalar: sudo apt-get install x11vnc
@@ -180,17 +303,49 @@ sudo systemctl start x11vnc.service
 
 para iniciar el sh solo darle los permisos y agregarlo a aplicaciones de arranque
 
-apt get install python-pip
-pip install tk
-python3 slideshw.py
 
 
-git clone https://github.com/Xelapan/publi.git .
-
-Python 3.7
-sudo apt-get install python3-tk
-sudo apt-get install python3-pil python3-pil.imagetk
 
 
-// Crear archivo para el log de errores
-touch error.log
+
+Ubuntu
+Requisitos de Entorno:
+Sistema Operativo: Ubuntu linux
+Versión de Python: Python 3.8 o superior.
+Bibliotecas requeridas:
+glob2
+opencv-python
+requests
+screeninfo
+
+Instalar python:
+// verificar si el sistema está actualizado
+sudo apt update
+// instalar python
+sudo apt install python3
+// verificar si la versión de python es la correcta (Python 3.8.10 o 
+)
+python3 --version
+// instalar pip 
+sudo apt install python3-pip
+// si la versión de python no es la correcta entonces ejecutar lo siguiente
+sudo apt install python3.8
+// para utilizar python3.8 como predeterminado ejecutar lo siguiente
+//agregar la versión que estaba instalado por defecto en el sistema en la parte subrayado
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+//elegir la opción de python3.8.2 
+sudo update-alternatives --config python3
+// por último actualizar el pip3
+pip3 install --upgrade pip
+// moverse a la carpeta publi debería estar en escritorio
+// instalar las bibliotecas
+pip3 install requirements
+// Verificar si las bibliotecas existen
+	pip3 list
+// si el archivo request no se ejecuta correctamente instalar las librerías uno por uno
+pip3 install glob2
+pip3 install opencv-python
+pip3 install requests
+pip3 install screeninfo
+
