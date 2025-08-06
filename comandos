@@ -148,8 +148,17 @@ sudo systemctl enable x11vnc.service
 cuarto:
 sudo systemctl start x11vnc.service
 
-
-
+comandos para evitar que la pantalla entre en suspension 
+solo copiaar las ultimas 3 lineas 
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+ -----comparar que esto este igual --------------
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+--------copiar---------
+#@xscreensaver -no-splash
+@xset s off                                                
+@xset -dpms 
+----------------------
 
 
 
@@ -226,15 +235,7 @@ buscar aplicaciones de inicio y añadir inicio.sh
 
 Desactivar la suspensión automática de la pantalla y también el gestor de energía que nunca se suspenda el dispositivo 
 
-comandos 
-sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
-  
-GNU nano 7.2          /etc/xdg/lxsession/LXDE-pi/autostart *                  
-@lxpanel --profile LXDE-pi
-@pcmanfm --desktop --profile LXDE-pi
-#@xscreensaver -no-splash
-@xset s off                                                
-@xset -dpms 
+
 
 Raspberry pi 3
 Requisitos de Entorno:
