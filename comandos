@@ -12,21 +12,10 @@ cd Desktop
 git clone -b test https://github.com/Xelapan/publi.git 
 
 PROYECTO PYTHON
-Configuración para el proyecto de publi:
-Comandos:
-sudo apt-get update
-sudo apt-get install python3-venv
-crear entorno virtual:
-cd publi
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install opencv-python
-pip install requests
-pip install screeninfo
-
 para probar ejecutar:
+	cd Desktop/publi
 	mkdir publicidad
+	source venv/bin/activate
 	python3 slideshw.py
 despues de probar cerrar la terminal.
 CONFIGURAR .SH
