@@ -95,7 +95,7 @@ sudo systemctl restart ssh
 Instalar vnc
 instalar: 
 sudo apt-get install x11vnc
-// si al intentar instalar x1vnc da un error es por posibles errores de resd
+// si al intentar instalar x1vnc da un error es por posible por error de red
 // ejecutar esto sudo nano /etc/apt/sources.list
 // dentro del archivo cambiar http por https para todos los repos
 aplicar password: 
