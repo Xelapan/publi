@@ -14,8 +14,8 @@ git clone -b test https://github.com/Xelapan/publi.git
 PROYECTO PYTHON
 Configuración para el proyecto de publi:
 Comandos:
-sudo apt update
-sudo apt install python3-venv
+sudo apt-get update
+sudo apt-get install python3-venv
 crear entorno virtual:
 cd publi
 python3 -m venv venv
@@ -26,8 +26,9 @@ pip install requests
 pip install screeninfo
 
 para probar ejecutar:
+	mkdir publicidad
 	python3 slideshw.py
-
+despues de probar cerrar la terminal.
 CONFIGURAR .SH
 Abrir una terminal
 	cd Desktop
@@ -66,7 +67,7 @@ Con la terminal abierta Ejecutar:
 sudo nano /etc/systemd/system/publicidad.service
 
 Copiar y pegar 
-		[Unit]
+[Unit]
 Description=Iniciar publicidad
 After=multi-user.target network-online.target display-manager.service
 Wants=network-online.target
@@ -90,13 +91,16 @@ sudo systemctl enable publicidad.service
 sudo systemctl restart publicidad.service
 
 
+Despes de ejectuar el ultimo de estos 3 comandos se va a ejectuar la publiciad para detenerlo temporalmente debe 
+cambiar a la terminal con alt + tab o abrir otra terminal con alt + t 
+detener el servicio 
 
-
+sudo systemctl stop publicidad.service
 
 
 
 Instalar ssh 
-sudo apt install openssh-server
+sudo apt-get install openssh-server
 sudo systemctl enable ssh
 sudo systemctl restart ssh
 Instalar vnc
