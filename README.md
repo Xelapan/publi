@@ -2,6 +2,7 @@
 https://docs.google.com/document/d/1y5Esnqf8l9H6TxA8f8jdZ8WNkBXqkJS0VPabHoRh6Po/edit?usp=sharing
 Repositorio para implementar en las pantallas de publicidad en Xelapan, para lo siguiente es verificar las configuraciones necesarias para el correcto funcionamiento del archivo `config.json`
 
+# Los comandos estan en el archivo comandos
 ---
 ## JSON
 

@@ -33,6 +33,12 @@ with open('config.json','r') as file:
     var_minutoUpdate = int(config['UPDATE']['MINUTE'])
     var_diaUpdate = config['UPDATE']['DAY']
 
+def actualizar_repositorio():
+    try:
+        os.system('git pull origin test')
+        logging.info('Repositorio actualizado correctamente')
+    except Exception as ex:
+        logging.exception('Error al actualizar el repositorio: ' + str(ex))
 # Variables globals de configuracion
 cmd_chdir = ("cd " + os.getcwd())
 cmd_reiniciar = "python3 slideshw.py"
@@ -232,5 +238,14 @@ def monitor_update_time():
                 last_update_day = now.date()
         time.sleep(10)
 if __name__ == "__main__":
-    threading.Thread(target=monitor_update_time, daemon=True).start()
-    runPresentacion()
+    try:
+        logging.basicConfig(filename='error.log', level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+        logging.info('Se inicio el programa') 
+        actualizar_repositorio()
+        #Hilo para la actualizacion 
+        threading.Thread(target=monitor_update_time, daemon=True).start()
+        # proyecto
+        runPresentacion()
+    except Exception as e:
+        fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        logging.exception(f"[{fecha}] Error ocurrió un error: {e}")
