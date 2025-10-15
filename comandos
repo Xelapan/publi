@@ -1,4 +1,177 @@
-nstalación:
+Repositorio rama Test: https://github.com/Xelapan/publi.git 
+comando: 
+Manual Técnico Publicidad						24/10/2023
+Repositorio rama Test: https://github.com/Xelapan/publi.git 
+comando: 
+Utilizar sistema operativo “Raspberry Pi OS”
+usuario: publicidad
+Password: 123456
+
+Abrir una terminal y ejecutar lo siguiente
+cd Desktop
+git clone -b test https://github.com/Xelapan/publi.git 
+
+PROYECTO PYTHON
+para probar ejecutar:
+	cd Desktop/publi
+	mkdir publicidad
+	source venv/bin/activate
+	python3 slideshw.py
+despues de probar cerrar la terminal.
+CONFIGURAR .SH
+Abrir una terminal
+	cd Desktop
+	sudo nano inicio.sh
+
+copiar esto y pegarlo en la terminal
+
+#!/bin/bash
+
+# Esperar a que haya conexión a internet
+while ! ping -c 1 8.8.8.8 &>/dev/null; do
+    echo "Esperando conexión a Internet..."
+    sleep 5
+done
+
+# Esperar a que el monitor esté encendido
+export DISPLAY=:0
+while ! xrandr | grep " connected " &>/dev/null; do
+    echo "Esperando a que el monitor esté encendido..."
+    sleep 5
+done
+
+cd /home/$USER/Desktop/publi/ || exit
+. venv/bin/activate || exit
+echo "Iniciando presentación..."
+python3 slideshw.py
+
+
+Para terminar de configurar esto aplicar permisos
+	sudo chmod 777 inicio.sh
+
+Configurar servicio publicidad
+
+Con la terminal abierta Ejecutar:
+
+sudo nano /etc/systemd/system/publicidad.service
+
+Copiar y pegar 
+[Unit]
+Description=Iniciar publicidad
+After=multi-user.target network-online.target display-manager.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/publicidad/Desktop/inicio.sh
+User=publicidad
+WorkingDirectory=/home/publicidad/Desktop/publi
+StandardOutput=append:/home/publicidad/Desktop/inicio.log
+StandardError=append:/home/publicidad/Desktop/inicio.log
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+
+Ejecutar
+sudo systemctl daemon-reload
+sudo systemctl enable publicidad.service
+sudo systemctl restart publicidad.service
+
+
+Despes de ejectuar el ultimo de estos 3 comandos se va a ejectuar la publiciad para detenerlo temporalmente debe 
+cambiar a la terminal con alt + tab o abrir otra terminal con alt + t 
+detener el servicio 
+
+sudo systemctl stop publicidad.service
+
+
+
+Instalar ssh 
+sudo apt-get install openssh-server
+sudo systemctl enable ssh
+sudo systemctl restart ssh
+Instalar vnc
+instalar: 
+sudo apt-get install x11vnc
+// si al intentar instalar x1vnc da un error es por posible por error de red
+// ejecutar esto sudo nano /etc/apt/sources.list
+// dentro del archivo cambiar http por https para todos los repos
+aplicar password: 
+x11vnc -storepasswd
+(cuando se ejecuta este comando simplemente digitar la contraseña del 1 al 6)
+En este inciso debe configurarse algunas permisos:
+sudo raspi-config
+Navegar a las opciones avanzadas:
+Selecciona Advanced Options.
+Luego, elige Wayland.
+Seleccionar X11:
+Se te presentarán opciones para seleccionar el servidor de pantalla.
+Elige la opción que corresponda a X11.
+ejecutar:
+ x11vnc -usepw -forever -display :0
+
+configurar vnc para iniciar cuando inicia el sistema operativo
+primero:
+sudo nano /etc/systemd/system/x11vnc.service
+
+segundo, copiar y pegar esto, cuando termina de pegar entonces presionar ctrl + x presiona “y” por último Enter.
+
+[Unit]
+Description=X11 VNC Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/x11vnc -usepw -forever -display :0
+Restart=always
+RestartSec=5
+User=publicidad
+
+[Install]
+WantedBy=multi-user.target
+
+tercero:
+sudo systemctl enable x11vnc.service
+
+cuarto:
+sudo systemctl start x11vnc.service
+
+comandos para evitar que la pantalla entre en suspension 
+solo copiaar las ultimas 3 lineas 
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+ -----comparar que esto este igual --------------
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+--------copiar---------
+#@xscreensaver -no-splash
+@xset s off                                                
+@xset -dpms 
+----------------------
+
+tambien ejecutar esto 
+nano ~/.xsessionrc
+
+---------copiar y pegar ----------
+xset s off
+xset s noblank
+xset -dpms
+-------------
+
+por ultiom 
+sudo reboot
+
+
+Raspberry pi 4 
+Configuraciones para sistema operativo Ubuntu Mate
+Requisitos de Entorno:
+Sistema Operativo: ubuntu-mate-22.04-desktop-arm64+raspi
+usuario: publicidad
+Password: 123456
+Versión de Python: Python 3.10 o superior.
+https://drive.google.com/file/d/1mjAhOVmb_NzigzNu7sOcd1JlVpaSANNI/view?usp=drive_link 
+
+Instalación:
 Ubuntu mate
 sudo apt update
 sudo apt upgrade
@@ -20,6 +193,91 @@ python3.10 -m pip install screeninfo
 Instalar ssh 
 sudo apt install openssh-server
 sudo systemctl enable ssh
+
+Instalar vnc
+instalar: sudo apt-get install x11vnc
+aplicar password: x11vnc -storepasswd
+ejecutar: x11vnc -usepw -forever -display :0
+
+
+
+
+
+configurar vnc para iniciar cuando inicia el sistema operativo
+primero:
+sudo nano /etc/systemd/system/x11vnc.service
+
+segundo, aqui despues de pegar esto ctr + x lugeo “y” por ultimo enter (copiar todo y pegarlo en la cosola):
+[Unit]
+Description=X11 VNC Server
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/x11vnc -usepw -forever -display :0
+Restart=always
+RestartSec=5
+User=publicidad
+
+[Install]
+WantedBy=multi-user.target
+
+tercero:
+sudo systemctl enable x11vnc.service
+
+cuarto:
+sudo systemctl start x11vnc.service
+
+para iniciar el sh solo darle los permisos y agregarlo a aplicaciones de arranque
+cd Escritorio
+sudo chmod 777 inicio.sh
+buscar aplicaciones de inicio y añadir inicio.sh
+
+Desactivar la suspensión automática de la pantalla y también el gestor de energía que nunca se suspenda el dispositivo 
+
+
+
+Raspberry pi 3
+Requisitos de Entorno:
+Sistema Operativo: ubuntu-mate-18.04.2-beta1-desktop-arm64+raspi3-ext4.img
+usuario: publicidad
+Password: 123456
+Versión de Python: Python 3.8.
+
+Instalación:
+Ubuntu mate
+sudo apt update
+sudo apt upgrade
+
+Instalar python:
+// verificar si el sistema está actualizado
+sudo apt update
+// instalar python
+sudo apt install python3
+// verificar si la versión de python es la correcta (Python 3.8.10 o 
+)
+python3 --version
+// instalar pip 
+sudo apt install python3-pip
+// si la versión de python no es la correcta entonces ejecutar lo siguiente
+sudo apt install python3.8
+// para utilizar python3.8 como predeterminado ejecutar lo siguiente
+//agregar la versión que estaba instalado por defecto en el sistema en la parte subrayado
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+//elegir la opción de python3.8.2 
+sudo update-alternatives --config python3
+// por último actualizar el pip3
+pip3 install --upgrade pip
+// moverse a la carpeta publi debería estar en escritorio
+// instalar las bibliotecas
+pip3 install requirements
+// Verificar si las bibliotecas existen
+	pip3 list
+// si el archivo request no se ejecuta correctamente instalar las librerías uno por uno
+pip3 install glob2
+pip3 install opencv-python
+pip3 install requests
+pip3 install screeninfo
 
 Instalar vnc
 instalar: sudo apt-get install x11vnc
@@ -52,17 +310,49 @@ sudo systemctl start x11vnc.service
 
 para iniciar el sh solo darle los permisos y agregarlo a aplicaciones de arranque
 
-apt get install python-pip
-pip install tk
-python3 slideshw.py
 
 
-git clone https://github.com/Xelapan/publi.git .
-
-Python 3.7
-sudo apt-get install python3-tk
-sudo apt-get install python3-pil python3-pil.imagetk
 
 
-// Crear archivo para el log de errores
-touch error.log
+
+Ubuntu
+Requisitos de Entorno:
+Sistema Operativo: Ubuntu linux
+Versión de Python: Python 3.8 o superior.
+Bibliotecas requeridas:
+glob2
+opencv-python
+requests
+screeninfo
+
+Instalar python:
+// verificar si el sistema está actualizado
+sudo apt update
+// instalar python
+sudo apt install python3
+// verificar si la versión de python es la correcta (Python 3.8.10 o 
+)
+python3 --version
+// instalar pip 
+sudo apt install python3-pip
+// si la versión de python no es la correcta entonces ejecutar lo siguiente
+sudo apt install python3.8
+// para utilizar python3.8 como predeterminado ejecutar lo siguiente
+//agregar la versión que estaba instalado por defecto en el sistema en la parte subrayado
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 2
+//elegir la opción de python3.8.2 
+sudo update-alternatives --config python3
+// por último actualizar el pip3
+pip3 install --upgrade pip
+// moverse a la carpeta publi debería estar en escritorio
+// instalar las bibliotecas
+pip3 install requirements
+// Verificar si las bibliotecas existen
+	pip3 list
+// si el archivo request no se ejecuta correctamente instalar las librerías uno por uno
+pip3 install glob2
+pip3 install opencv-python
+pip3 install requests
+pip3 install screeninfo
+
