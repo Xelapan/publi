@@ -228,14 +228,13 @@ def monitor_update_time():
     while True:
         now = datetime.now()
         scheduled_time = datetime.strptime(f"{var_horaUpdate}:{var_minutoUpdate}", "%H:%M").time()
-        if now.strftime("%A") == var_diaUpdate:
-            scheduled_dt = datetime.combine(now.date(), scheduled_time)
-            window_end = scheduled_dt + timedelta(minutes=5)
-            # Si está dentro del rango y no se actualizó hoy
-            if scheduled_dt <= now <= window_end and last_update_day != now.date():
-                print("🕒 Hora de actualización detectada.")
-                should_update = True
-                last_update_day = now.date()
+        scheduled_dt = datetime.combine(now.date(), scheduled_time)
+        window_end = scheduled_dt + timedelta(minutes=5)
+        # Si está dentro del rango y no se actualizó hoy
+        if scheduled_dt <= now <= window_end and last_update_day != now.date():
+            print("🕒 Hora de actualización detectada.")
+            should_update = True
+            last_update_day = now.date()
         time.sleep(10)
 if __name__ == "__main__":
     try:
